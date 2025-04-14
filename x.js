@@ -1,1 +1,1 @@
-alert("XSS from Serveo!")
+alert("XSS from Serveo/ Github Pages!")
