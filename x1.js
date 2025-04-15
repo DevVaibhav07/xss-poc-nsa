@@ -14,4 +14,4 @@ if (payload) {
 }
 
 // Your actual attack payload:
-alert("XSS from Serveo!");
+alert("XSS from Vaibhav!");
